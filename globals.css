@@ -13,7 +13,7 @@ button, input, select { font: inherit; }
   body { background: white; color: black; }
   header, footer, main > :not(.print-sheet) { display: none !important; }
   main { max-width: none !important; padding: 0 !important; }
-  .print-sheet { display: block !important; width: 283mm; height: 190mm; overflow: hidden; }
+  .print-sheet { display: block !important; width: 283mm; min-height: 180mm; overflow: visible; }
   .print-title { display: grid !important; grid-template-columns: 1fr 1fr 1fr; align-items: end; margin-bottom: 3mm; border-bottom: 2px solid #111; padding-bottom: 2mm; }
   .print-title h1 { font-size: 18px; font-weight: 900; }
   .print-title b { text-align: center; font-size: 13px; }
