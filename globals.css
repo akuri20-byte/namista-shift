@@ -21,8 +21,10 @@ button, input, select { font: inherit; }
   .print-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 6.5px; }
   .print-table th, .print-table td { height: 5.5mm; border: .6px solid #222; padding: .5mm; text-align: center; overflow: hidden; white-space: nowrap; }
   .print-table th { background: #dcebf5 !important; font-weight: 800; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  .print-table th:first-child, .print-table td:first-child { width: 16mm; }
-  .print-table th:nth-child(2), .print-table td:nth-child(2) { width: 25mm; text-align: left; }
+  .manager-print th:first-child, .manager-print td:first-child { width: 16mm; }
+  .manager-print th:nth-child(2), .manager-print td:nth-child(2) { width: 25mm; text-align: left; }
+  .staff-print th:first-child, .staff-print td:first-child { width: 30mm; text-align: left; }
   .print-table th small { display: block; }
+  .labor-row th { background: #eef3f6 !important; font-weight: 900; }
   .print-table, .print-table tr, .print-table td, .print-table th { break-inside: avoid; page-break-inside: avoid; }
 }

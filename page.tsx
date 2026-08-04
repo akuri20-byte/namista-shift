@@ -26,6 +26,7 @@ export default function ManagerPage() {
   const [salesTarget, setSalesTarget] = useState(3000000);
   const [laborRate, setLaborRate] = useState(22);
   const [printHalf, setPrintHalf] = useState<"first" | "second">("first");
+  const [printMode, setPrintMode] = useState<"staff" | "manager">("staff");
   const selectedIndex = days.findIndex((day) => day.isoDate === selectedDate);
   const laborBudget = salesTarget * laborRate / 100;
   const forecastLabor = assignments.reduce((sum, item) => sum + (members.find((member) => member.id === item.staffId)?.hourlyWage ?? 0), 0);
@@ -47,8 +48,9 @@ export default function ManagerPage() {
   function addMember() { const index = members.length; setMembers((current) => [...current, { id: `staff-${Date.now()}`, name: "新しいスタッフ", role: "staff", jobTitle: "ホール", isNew: true, hourlyWage: 1200, color: nextStaffColor(index), skills: { kitchen: 0, hall: 1, drink: 0 } }]); setTab("skills"); }
   function deleteMember(id: string) { setMembers((current) => current.filter((member) => member.id !== id)); setAssignments((current) => current.filter((item) => item.staffId !== id)); }
   function moveDay(diff: number) { setSelectedDate(days[Math.max(0, Math.min(days.length - 1, selectedIndex + diff))].isoDate); }
-  function printSchedule() { document.body.dataset.printHalf = printHalf; window.print(); }
+  function printSchedule(mode: "staff" | "manager") { setPrintMode(mode); document.body.dataset.printMode = mode; setTimeout(() => window.print(), 0); }
   function shiftText(staffId: string, date: string) { const times = assignments.filter((item) => item.staffId === staffId && item.date === date).map((item) => Number(item.time.split(":")[0])).sort((a, b) => a - b); return times.length ? `${Math.min(...times)}-${Math.max(...times) + 1}` : ""; }
+  function dayLabor(date: string) { return assignments.filter((item) => item.date === date).reduce((sum, item) => sum + (members.find((member) => member.id === item.staffId)?.hourlyWage ?? 0), 0); }
 
   return <AppShell name="スティン" role="店長" canManage>
     <div className="mb-5"><span className="text-sm font-black text-rose-600">NAMISTA SHIFT</span><h1 className="text-2xl font-black sm:text-3xl">ナミスタ 店舗管理</h1><p className="mt-1 text-sm text-stone-500">必要人数を決め、自動作成して、確認・公開します。</p></div>
@@ -74,7 +76,7 @@ export default function ManagerPage() {
         <section className="min-w-0 space-y-5">
           <div className="panel overflow-hidden"><div className="border-b p-4 sm:p-5"><h2 className="text-lg font-black">{days[selectedIndex].shortDate} の必要人数</h2><p className="text-xs text-stone-400">− / ＋ で時間帯ごとの人数を変更</p></div><div className="overflow-x-auto"><table className="w-full min-w-[620px] text-sm"><thead><tr className="bg-stone-50"><th className="p-3 text-left">時間</th>{positions.map((position) => <th key={position.key} className="p-3">{position.label}</th>)}<th className="p-3">充足状況</th></tr></thead><tbody>{requirements[selectedDate].map((slot) => <tr key={slot.time} className="border-t"><td className="p-3 font-black"><Clock3 className="mr-1 inline" size={15}/>{slot.time}</td>{positions.map((position) => <td key={position.key} className="p-3"><div className="flex justify-center gap-2"><button onClick={() => updateRequirement(slot.time, position.key, -1)} className="h-9 w-9 rounded-lg border">−</button><b className="w-9 py-2 text-center">{slot[position.key]}人</b><button onClick={() => updateRequirement(slot.time, position.key, 1)} className="h-9 w-9 rounded-lg border border-rose-200 bg-rose-50 text-rose-700">＋</button></div></td>)}<td className="p-3 text-center text-xs">{positions.map((position) => { const required = slot[position.key]; const actual = assignments.filter((item) => item.date === selectedDate && item.time === slot.time && item.position === position.key).length; return required ? <span key={position.key} className={`mr-1 rounded-full px-2 py-1 ${actual >= required ? "bg-emerald-100 text-emerald-700" : "bg-orange-100 text-orange-700"}`}>{position.label} {actual}/{required}</span> : null; })}</td></tr>)}</tbody></table></div></div>
           <AssignmentPanel date={selectedDate} requirements={requirements[selectedDate]} assignments={assignments} members={members}/>
-          {!!assignments.length && <div className="flex flex-col gap-3 rounded-2xl border bg-white p-3 sm:flex-row"><select value={printHalf} onChange={(e) => setPrintHalf(e.target.value as "first" | "second")} className="min-w-0 flex-1 rounded-xl border px-3 sm:flex-none"><option value="first">前半（1〜16日）</option><option value="second">後半（17日〜末日）</option></select><button onClick={printSchedule} className="flex items-center justify-center gap-2 rounded-xl border px-4 py-3 font-bold"><Printer size={17}/>A4で印刷・PDF保存</button></div>}
+          {!!assignments.length && <div className="rounded-2xl border bg-white p-3"><p className="mb-2 text-xs font-bold text-stone-500">印刷する期間と用途を選んでください</p><div className="flex flex-col gap-2 sm:flex-row"><select value={printHalf} onChange={(e) => setPrintHalf(e.target.value as "first" | "second")} className="min-w-0 rounded-xl border px-3 py-3"><option value="first">前半（1〜16日）</option><option value="second">後半（17日〜末日）</option></select><button onClick={() => printSchedule("staff")} className="flex items-center justify-center gap-2 rounded-xl border px-4 py-3 font-bold"><Printer size={17}/>スタッフ共有用（時給なし）</button><button onClick={() => printSchedule("manager")} className="flex items-center justify-center gap-2 rounded-xl bg-[#29262d] px-4 py-3 font-bold text-white"><Printer size={17}/>店舗管理用（人件費あり）</button></div></div>}
         </section>
       </div>
     </>}
@@ -83,8 +85,8 @@ export default function ManagerPage() {
     {tab === "rules" && <RulesPanel/>}
 
     <section className="print-sheet">
-      <header className="print-title"><h1>シフト表</h1><b>{printDays[0]?.shortDate}〜{printDays.at(-1)?.shortDate}</b><strong>ナミスタ</strong></header>
-      <table className="print-table"><thead><tr><th>時給</th><th>氏名</th>{printDays.map((day) => <th key={day.isoDate}>{day.shortDate}<small>({day.weekday})</small></th>)}</tr></thead><tbody>{members.map((member) => <tr key={member.id}><td>{yen.format(member.hourlyWage)}</td><td>{member.isNew ? "🔰 " : ""}{member.name}</td>{printDays.map((day) => <td key={day.isoDate}>{shiftText(member.id, day.isoDate)}</td>)}</tr>)}</tbody></table>
+      <header className="print-title"><h1>{printMode === "manager" ? "店舗管理用シフト表" : "スタッフ共有シフト表"}</h1><b>{printDays[0]?.shortDate}〜{printDays.at(-1)?.shortDate}</b><strong>ナミスタ</strong></header>
+      <table className={`print-table ${printMode === "staff" ? "staff-print" : "manager-print"}`}><thead><tr>{printMode === "manager" && <th className="wage-column">時給</th>}<th>氏名</th>{printDays.map((day) => <th key={day.isoDate}>{day.shortDate}<small>({day.weekday})</small></th>)}</tr></thead><tbody>{members.map((member) => <tr key={member.id}>{printMode === "manager" && <td className="wage-column">{yen.format(member.hourlyWage)}</td>}<td>{member.isNew ? "🔰 " : ""}{member.name}</td>{printDays.map((day) => <td key={day.isoDate}>{shiftText(member.id, day.isoDate)}</td>)}</tr>)}{printMode === "manager" && <tr className="labor-row"><th colSpan={2}>予想人件費</th>{printDays.map((day) => <th key={day.isoDate}>{yen.format(dayLabor(day.isoDate))}</th>)}</tr>}</tbody></table>
     </section>
   </AppShell>;
 }
