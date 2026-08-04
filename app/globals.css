@@ -13,16 +13,18 @@ button, input, select { font: inherit; }
   body { background: white; color: black; }
   header, footer, main > :not(.print-sheet) { display: none !important; }
   main { max-width: none !important; padding: 0 !important; }
-  .print-sheet { display: block !important; }
+  .print-sheet { display: block !important; width: 283mm; height: 190mm; overflow: hidden; }
   .print-title { display: grid !important; grid-template-columns: 1fr 1fr 1fr; align-items: end; margin-bottom: 3mm; border-bottom: 2px solid #111; padding-bottom: 2mm; }
   .print-title h1 { font-size: 18px; font-weight: 900; }
   .print-title b { text-align: center; font-size: 13px; }
   .print-title strong { text-align: right; font-size: 15px; }
-  .print-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 7.5px; }
-  .print-table th, .print-table td { height: 7mm; border: .6px solid #222; padding: 1mm .5mm; text-align: center; overflow: hidden; }
+  .print-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 6.5px; }
+  .print-table th, .print-table td { height: 5.5mm; border: .6px solid #222; padding: .5mm; text-align: center; overflow: hidden; white-space: nowrap; }
   .print-table th { background: #dcebf5 !important; font-weight: 800; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  .print-table th:first-child, .print-table td:first-child { width: 16mm; }
-  .print-table th:nth-child(2), .print-table td:nth-child(2) { width: 25mm; text-align: left; }
+  .manager-print th:first-child, .manager-print td:first-child { width: 16mm; }
+  .manager-print th:nth-child(2), .manager-print td:nth-child(2) { width: 25mm; text-align: left; }
+  .staff-print th:first-child, .staff-print td:first-child { width: 30mm; text-align: left; }
   .print-table th small { display: block; }
-  .print-sheet tr { break-inside: avoid; }
+  .labor-row th { background: #eef3f6 !important; font-weight: 900; }
+  .print-table, .print-table tr, .print-table td, .print-table th { break-inside: avoid; page-break-inside: avoid; }
 }
