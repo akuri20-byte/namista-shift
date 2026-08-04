@@ -30,5 +30,14 @@ button, input, select { font: inherit; }
   .print-summary > div { display: flex; align-items: center; justify-content: space-between; border: .8px solid #222; background: #dcebf5 !important; padding: 2mm 3mm; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .print-summary small { font-size: 7px; font-weight: 700; }
   .print-summary b { font-size: 11px; }
+  .management-print { display: grid !important; grid-template-columns: 78mm 1fr; gap: 5mm; margin-top: 3mm; }
+  .management-print table { width: 100%; border-collapse: collapse; font-size: 7px; }
+  .management-print th, .management-print td { height: 5mm; border: .6px solid #222; padding: 1mm 2mm; }
+  .management-print th { width: 45mm; background: #eef3f6 !important; text-align: left; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .management-print td { text-align: right; font-weight: 800; }
+  .management-notes { display: grid !important; grid-template-columns: 22mm 1fr; border: .8px solid #222; font-size: 7px; }
+  .management-notes h2 { grid-column: 1 / -1; border-bottom: .6px solid #222; padding: 1.5mm; text-align: center; font-size: 11px; font-weight: 900; }
+  .management-notes > div { min-height: 8mm; border-top: .6px solid #222; padding: 1.5mm; }
+  .management-notes > div b { display: block; }
   .print-table, .print-table tr, .print-table td, .print-table th { break-inside: avoid; page-break-inside: avoid; }
 }
