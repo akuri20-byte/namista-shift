@@ -25,6 +25,10 @@ button, input, select { font: inherit; }
   .manager-print th:nth-child(2), .manager-print td:nth-child(2) { width: 25mm; text-align: left; }
   .staff-print th:first-child, .staff-print td:first-child { width: 30mm; text-align: left; }
   .print-table th small { display: block; }
-  .labor-row th { background: #eef3f6 !important; font-weight: 900; }
+  .summary-row th { height: 5mm; background: #eef3f6 !important; font-weight: 900; }
+  .print-summary { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 3mm; }
+  .print-summary > div { display: flex; align-items: center; justify-content: space-between; border: .8px solid #222; background: #dcebf5 !important; padding: 2mm 3mm; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .print-summary small { font-size: 7px; font-weight: 700; }
+  .print-summary b { font-size: 11px; }
   .print-table, .print-table tr, .print-table td, .print-table th { break-inside: avoid; page-break-inside: avoid; }
 }
